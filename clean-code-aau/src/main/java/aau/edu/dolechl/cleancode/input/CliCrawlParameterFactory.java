@@ -2,6 +2,9 @@ package aau.edu.dolechl.cleancode.input;
 
 import org.apache.commons.cli.*;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class CliCrawlParameterFactory implements CrawlParameterFactory {
 
     private final String[] args;
@@ -13,7 +16,13 @@ public class CliCrawlParameterFactory implements CrawlParameterFactory {
     @Override
     public CrawlParameter create() {
         Options options = new Options();
-        options.addOption(Option.builder("u").longOpt("url").hasArg(true).required().build());
+        Option urlOption = Option.builder("u")
+                .longOpt("url")
+                .hasArg(true)
+                .type(URL.class)
+                .required()
+                .build();
+        options.addOption(urlOption);
         options.addOption("d", "depth", true, "Depth of crawling");
         options.addOption("l", "language", true, "Target language");
 
@@ -29,7 +38,14 @@ public class CliCrawlParameterFactory implements CrawlParameterFactory {
             return null;
         }
 
-        String url = cmd.getOptionValue("url");
+        URL url;
+        try {
+            url = new URL(cmd.getOptionValue("url"));
+        } catch (MalformedURLException e) {
+            System.err.println(e.getMessage());
+            return null;
+        }
+
         int depth;
         try {
             depth = Integer.parseInt(cmd.getOptionValue("depth", "0"));
