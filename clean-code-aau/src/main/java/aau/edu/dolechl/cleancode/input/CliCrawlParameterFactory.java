@@ -4,6 +4,8 @@ import org.apache.commons.cli.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CliCrawlParameterFactory implements CrawlParameterFactory {
 
@@ -23,7 +25,16 @@ public class CliCrawlParameterFactory implements CrawlParameterFactory {
                 .required()
                 .build();
         options.addOption(urlOption);
+
         options.addOption("d", "depth", true, "Depth of crawling");
+
+        Option websitesOption = Option.builder("w")
+                .longOpt("websites")
+                .hasArg(true)
+                .numberOfArgs(Option.UNLIMITED_VALUES)
+                .build();
+        options.addOption(websitesOption);
+
         options.addOption("l", "language", true, "Target language");
 
         CommandLineParser parser = new DefaultParser();
@@ -53,8 +64,15 @@ public class CliCrawlParameterFactory implements CrawlParameterFactory {
             System.err.println("Invalid depth value.");
             return null;
         }
+
+        List<String> websites = new ArrayList<>();
+        String[] websiteOptionValues = cmd.getOptionValues("w");
+        if (websiteOptionValues != null) {
+            websites = List.of(websiteOptionValues);
+        }
+
         String language = cmd.getOptionValue("language", "english");
 
-        return new CrawlParameter(url, depth, language);
+        return new CrawlParameter(url, depth, websites, language);
     }
 }
