@@ -1,10 +1,5 @@
 package aau.edu.dolechl.cleancode.html.elements;
 
-public class Link implements HtmlElement {
+public record Link(String url) implements HtmlElement {
 
-    String url;
-
-    public Link(String url) {
-        this.url = url;
-    }
 }
