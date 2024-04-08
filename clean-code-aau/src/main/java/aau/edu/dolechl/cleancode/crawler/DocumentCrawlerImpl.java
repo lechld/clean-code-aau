@@ -10,6 +10,7 @@ import aau.edu.dolechl.cleancode.html.fetch.HtmlFetcher;
 import aau.edu.dolechl.cleancode.input.CrawlParameter;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -36,12 +37,18 @@ public class DocumentCrawlerImpl implements DocumentCrawler {
 
         if (depth > 0) {
             for (HtmlLink link : fetchResult.links()) {
-                boolean isRelevantSite = websites.stream().anyMatch(expectedSite -> link.url().contains(expectedSite));
+                boolean isRelevantSite = websites.isEmpty() || websites.stream()
+                        .anyMatch(expectedSite -> link.url().contains(expectedSite));
 
                 if (isRelevantSite) {
-                    document.addElement(new DocumentLink(depth, link.url()));
+                    try {
+                        URL nextUrl = new URL(link.url());
 
-                    addHeadersRecursively(document, new URL(link.url()), depth - 1, websites);
+                        document.addElement(new DocumentLink(depth, link.url(), true));
+                        addHeadersRecursively(document, nextUrl, depth - 1, websites);
+                    } catch (MalformedURLException e) {
+                        document.addElement(new DocumentLink(depth, link.url(), false));
+                    }
                 }
             }
         }

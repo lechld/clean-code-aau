@@ -1,9 +1,8 @@
 package aau.edu.dolechl.cleancode.domain;
 
-import java.net.URI;
-
 public record DocumentLink(
         int depth,
-        String uri
+        String uri,
+        boolean isValidLink
 ) implements DocumentElement {
 }
