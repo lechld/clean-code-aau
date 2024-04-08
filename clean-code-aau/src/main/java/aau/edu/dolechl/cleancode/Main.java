@@ -10,6 +10,8 @@ import aau.edu.dolechl.cleancode.input.CliCrawlParameterFactory;
 import aau.edu.dolechl.cleancode.input.CrawlParameter;
 import aau.edu.dolechl.cleancode.input.CrawlParameterFactory;
 import aau.edu.dolechl.cleancode.markdown.MarkdownDocumentWriter;
+import aau.edu.dolechl.cleancode.translator.DocumentTranslator;
+import aau.edu.dolechl.cleancode.translator.DocumentTranslatorImpl;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -34,6 +36,9 @@ public class Main {
             System.out.println("Internet interrupted.");
             return;
         }
+
+        DocumentTranslator translator = new DocumentTranslatorImpl();
+        doc = translator.translate(doc, crawlParameter.targetLanguage());
 
         DocumentWriter writer = null;
         try {
