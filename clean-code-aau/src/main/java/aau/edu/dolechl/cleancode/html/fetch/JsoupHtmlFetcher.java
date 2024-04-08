@@ -1,25 +1,19 @@
-package aau.edu.dolechl.cleancode.crawler;
+package aau.edu.dolechl.cleancode.html.fetch;
 
-import aau.edu.dolechl.cleancode.html.Header;
-import aau.edu.dolechl.cleancode.html.Link;
-import aau.edu.dolechl.cleancode.input.CrawlParameter;
+import aau.edu.dolechl.cleancode.html.elements.Header;
+import aau.edu.dolechl.cleancode.html.elements.Link;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
-public class CrawlerImpl implements Crawler {
-
-    private final CrawlParameter crawlParameter;
-
-    public CrawlerImpl(CrawlParameter crawlParameter) {
-        this.crawlParameter = crawlParameter;
-    }
+public class JsoupHtmlFetcher implements HtmlFetcher {
 
     @Override
-    public CrawlResult crawl() throws IOException {
-        Document doc = Jsoup.connect(crawlParameter.url().toString()).get();
+    public HtmlFetchResult fetch(URL url) throws IOException {
+        Document doc = Jsoup.connect(url.toString()).get();
 
         List<Header> headers = doc.select("h1, h2, h3, h4, h5, h6")
                 .stream()
@@ -39,6 +33,6 @@ public class CrawlerImpl implements Crawler {
                 })
                 .toList();
 
-        return new CrawlResult(headers, links);
+        return new HtmlFetchResult(headers, links);
     }
 }

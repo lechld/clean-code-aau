@@ -1,4 +1,4 @@
-package aau.edu.dolechl.cleancode.html;
+package aau.edu.dolechl.cleancode.html.elements;
 
 public class Header implements HtmlElement {
 
