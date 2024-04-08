@@ -1,12 +1,12 @@
 package aau.edu.dolechl.cleancode.html.fetch;
 
-import aau.edu.dolechl.cleancode.html.elements.Header;
-import aau.edu.dolechl.cleancode.html.elements.Link;
+import aau.edu.dolechl.cleancode.html.elements.HtmlHeader;
+import aau.edu.dolechl.cleancode.html.elements.HtmlLink;
 
 import java.util.List;
 
 public record HtmlFetchResult(
-        List<Header> headers,
-        List<Link> links
+        List<HtmlHeader> headers,
+        List<HtmlLink> links
 ) {
 }

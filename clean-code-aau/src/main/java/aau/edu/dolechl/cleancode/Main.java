@@ -1,7 +1,8 @@
 package aau.edu.dolechl.cleancode;
 
-import aau.edu.dolechl.cleancode.crawler.Crawler;
-import aau.edu.dolechl.cleancode.crawler.CrawlerImpl;
+import aau.edu.dolechl.cleancode.crawler.DocumentCrawler;
+import aau.edu.dolechl.cleancode.crawler.DocumentCrawlerImpl;
+import aau.edu.dolechl.cleancode.domain.Document;
 import aau.edu.dolechl.cleancode.html.fetch.HtmlFetcher;
 import aau.edu.dolechl.cleancode.html.fetch.JsoupHtmlFetcher;
 import aau.edu.dolechl.cleancode.input.CliCrawlParameterFactory;
@@ -21,12 +22,11 @@ public class Main {
         }
 
         HtmlFetcher htmlFetcher = new JsoupHtmlFetcher();
+        DocumentCrawler crawler = new DocumentCrawlerImpl(htmlFetcher);
 
-        Crawler crawler = new CrawlerImpl(htmlFetcher, crawlParameter);
-
-        String result;
+        Document doc = null;
         try {
-            result = crawler.crawl();
+            doc = crawler.crawlDocument(crawlParameter);
         } catch (IOException e) {
             System.out.println("Internet interrupted.");
             return;
