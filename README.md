@@ -26,11 +26,7 @@ Note, also provide automated unit tests for each feature (we will not accept sub
 
 ## How to use the application:
 
-# CLI Crawl Parameter Factory
-
-This program provides a command-line interface (CLI) for creating crawl parameters to be used in web crawling tasks. It allows users to specify parameters such as the URL to crawl, the depth of crawling, target websites, and the desired language.
-
-## Usage
+This program provides a command-line interface (CLI) for crawling websites. It allows users to specify parameters such as the URL to crawl, the depth of crawling, target websites to crawl in depth, and the language the content crawled should be translated to.
 
 ### Prerequisites
 
