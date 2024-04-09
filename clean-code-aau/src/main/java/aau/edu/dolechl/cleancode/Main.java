@@ -13,6 +13,7 @@ import aau.edu.dolechl.cleancode.markdown.MarkdownDocumentWriter;
 import aau.edu.dolechl.cleancode.translator.DocumentTranslator;
 import aau.edu.dolechl.cleancode.translator.DocumentTranslatorImpl;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -40,12 +41,13 @@ public class Main {
         DocumentTranslator translator = new DocumentTranslatorImpl();
         doc = translator.translate(doc, crawlParameter.targetLanguage());
 
-        DocumentWriter writer = null;
+        DocumentWriter writer;
         try {
-            writer = new MarkdownDocumentWriter(new FileWriter("crawl.md"));
+            File file = new File("crawl.md");
+            writer = new MarkdownDocumentWriter(new FileWriter(file));
             writer.write(crawlParameter, doc);
 
-            System.out.println("Success");
+            System.out.println("Crawl written to " + file.getAbsolutePath());
         } catch (IOException e) {
             System.out.println("Can't write to file.");
         }
