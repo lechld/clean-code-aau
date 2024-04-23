@@ -13,6 +13,9 @@ repositories {
 dependencies {
     implementation("commons-cli:commons-cli:1.4")
 
+    // https://github.com/DeepLcom/deepl-java
+    implementation("com.deepl.api:deepl-java:1.5.0")
+
     // jsoup HTML parser library @ https://jsoup.org/
     implementation("org.jsoup:jsoup:1.17.2")
 

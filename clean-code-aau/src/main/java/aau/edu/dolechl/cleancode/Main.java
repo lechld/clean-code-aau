@@ -10,6 +10,7 @@ import aau.edu.dolechl.cleancode.input.CliCrawlParameterFactory;
 import aau.edu.dolechl.cleancode.input.CrawlParameter;
 import aau.edu.dolechl.cleancode.input.CrawlParameterFactory;
 import aau.edu.dolechl.cleancode.markdown.MarkdownDocumentWriter;
+import aau.edu.dolechl.cleancode.translator.DeepLTranslationWrapper;
 import aau.edu.dolechl.cleancode.translator.DocumentTranslator;
 import aau.edu.dolechl.cleancode.translator.DocumentTranslatorImpl;
 
@@ -30,7 +31,7 @@ public class Main {
         HtmlFetcher htmlFetcher = new JsoupHtmlFetcher();
         DocumentCrawler crawler = new DocumentCrawlerImpl(htmlFetcher);
 
-        Document doc = null;
+        Document doc;
         try {
             doc = crawler.crawlDocument(crawlParameter);
         } catch (IOException e) {
@@ -38,7 +39,8 @@ public class Main {
             return;
         }
 
-        DocumentTranslator translator = new DocumentTranslatorImpl();
+        DeepLTranslationWrapper deepLTranslationWrapper = new DeepLTranslationWrapper();
+        DocumentTranslator translator = new DocumentTranslatorImpl(deepLTranslationWrapper);
         doc = translator.translate(doc, crawlParameter.targetLanguage());
 
         DocumentWriter writer;

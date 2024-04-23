@@ -10,20 +10,20 @@ public class CliCrawlParameterFactoryTest {
 
     @Test
     public void testCreate_WithValidArgs() {
-        String[] args = {"-u", "http://example.com", "-d", "5", "-l", "english", "-w", "site1.com", "site2.com"};
+        String[] args = {"-u", "http://example.com", "-d", "5", "-l", "en", "-w", "site1.com", "site2.com"};
         CliCrawlParameterFactory factory = new CliCrawlParameterFactory(args);
         CrawlParameter crawlParameter = factory.create();
 
         assertNotNull(crawlParameter);
         assertEquals("http://example.com", crawlParameter.url().toString());
         assertEquals(5, crawlParameter.depth());
-        assertEquals("english", crawlParameter.targetLanguage());
+        assertEquals("en", crawlParameter.targetLanguage());
         assertEquals(List.of("site1.com", "site2.com"), crawlParameter.websites());
     }
 
     @Test
     public void testCreate_MissingUrlArg() {
-        String[] args = {"-d", "5", "-l", "english"};
+        String[] args = {"-d", "5", "-l", "en"};
         CliCrawlParameterFactory factory = new CliCrawlParameterFactory(args);
         CrawlParameter crawlParameter = factory.create();
 
@@ -32,7 +32,7 @@ public class CliCrawlParameterFactoryTest {
 
     @Test
     public void testCreate_InvalidDepthArg() {
-        String[] args = {"-u", "http://example.com", "-d", "invalid", "-l", "english"};
+        String[] args = {"-u", "http://example.com", "-d", "invalid", "-l", "en"};
         CliCrawlParameterFactory factory = new CliCrawlParameterFactory(args);
         CrawlParameter crawlParameter = factory.create();
 

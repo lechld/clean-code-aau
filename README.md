@@ -36,6 +36,8 @@ This program provides a command-line interface (CLI) for crawling websites. It a
 
 1. Clone or download this repository.
 2. Compile the source code using a Java compiler.
+3. Register at https://www.deepl.com/translator to receive an api authorization key.
+4. Create an environment variable at your system called `DEEPL_AUTH` having the authorization key as value.
 
 ### Running the Program
 
@@ -50,7 +52,7 @@ java Main [options]
 -   `-u, --url <URL>`: Specify the URL to crawl (required).
 -   `-d, --depth <depth>`: Set the depth of crawling (optional, default is 0).
 -   `-w, --websites <websites>`: Specify websites to crawl in depth (optional, supports multiple values).
--   `-l, --language <language>`: Set the target language for crawling (optional, default is "english").
+-   `-l, --language <language>`: Set the target language for crawling (optional, default is "en").
 
 ### Examples
 
@@ -58,7 +60,7 @@ java Main [options]
     `java Main -u https://example.com`
 
 2.  Specifying depth and language:
-    `java Main -u https://example.com -d 3 -l french`
+    `java Main -u https://example.com -d 3 -l en`
 
 3.  Specifying websites to crawl in depth
     `java Main -u https://example.com -d 1 -w https://example2.com https://example3.com`
