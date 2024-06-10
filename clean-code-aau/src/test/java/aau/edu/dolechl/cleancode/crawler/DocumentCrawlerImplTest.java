@@ -47,7 +47,7 @@ class DocumentCrawlerImplTest {
 
         DocumentCrawlerImpl crawler = new DocumentCrawlerImpl(htmlFetcher);
 
-        Document document = crawler.crawlDocument(new CrawlParameter(url, depth, websites, "de"));
+        Document document = crawler.crawlDocument(url, depth, websites);
 
         assertEquals(4, document.getElements().size());
 
