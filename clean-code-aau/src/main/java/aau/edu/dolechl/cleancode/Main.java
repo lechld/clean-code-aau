@@ -2,12 +2,10 @@ package aau.edu.dolechl.cleancode;
 
 import aau.edu.dolechl.cleancode.crawler.DocumentCrawler;
 import aau.edu.dolechl.cleancode.crawler.DocumentCrawlerImpl;
-import aau.edu.dolechl.cleancode.domain.Document;
 import aau.edu.dolechl.cleancode.domain.DocumentWriter;
 import aau.edu.dolechl.cleancode.html.fetch.HtmlFetcher;
 import aau.edu.dolechl.cleancode.html.fetch.JsoupHtmlFetcher;
 import aau.edu.dolechl.cleancode.input.CliCrawlParameterFactory;
-import aau.edu.dolechl.cleancode.input.CrawlParameter;
 import aau.edu.dolechl.cleancode.input.CrawlParameterFactory;
 import aau.edu.dolechl.cleancode.markdown.MarkdownDocumentWriter;
 import aau.edu.dolechl.cleancode.translator.DeepLTranslationWrapper;
@@ -21,39 +19,40 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) {
-        CrawlParameterFactory crawlParameterFactory = new CliCrawlParameterFactory(args);
-        CrawlParameter crawlParameter = crawlParameterFactory.create();
-
-        if (crawlParameter == null) {
-            return;
-        }
-
-        HtmlFetcher htmlFetcher = new JsoupHtmlFetcher();
-        DocumentCrawler crawler = new DocumentCrawlerImpl(htmlFetcher);
-
-        Document doc;
-        try {
-            doc = crawler.crawlDocument(crawlParameter);
-        } catch (IOException e) {
-            System.out.println("Internet interrupted.");
-            return;
-        }
-
-        DeepLTranslationWrapper deepLTranslationWrapper = new DeepLTranslationWrapper();
-        DocumentTranslator translator = new DocumentTranslatorImpl(deepLTranslationWrapper);
-        doc = translator.translate(doc, crawlParameter.targetLanguage());
-
+        CrawlParameterFactory crawlParameterFactory = createCrawlParameterFactory(args);
+        DocumentCrawler crawler = createDocumentCrawler(createHtmlFetcher());
+        DocumentTranslator translator = createDocumentTranslator();
         DocumentWriter writer;
         try {
-            File file = new File("crawl.md");
-            writer = new MarkdownDocumentWriter(new FileWriter(file));
-            writer.write(crawlParameter, doc);
-
-            System.out.println("Crawl written to " + file.getAbsolutePath());
+            writer = createDocumentWriter();
         } catch (IOException e) {
-            System.out.println("Can't write to file.");
+            System.err.println("Unexpected error occurred.");
+            return;
         }
+        CrawlerApplication app = new CrawlerApplication();
 
-        System.out.println("Finished.");
+        app.run(crawlParameterFactory, crawler, translator, writer);
+    }
+
+    private static CrawlParameterFactory createCrawlParameterFactory(String[] args) {
+        return new CliCrawlParameterFactory(args);
+    }
+
+    private static HtmlFetcher createHtmlFetcher() {
+        return new JsoupHtmlFetcher();
+    }
+
+    private static DocumentCrawler createDocumentCrawler(HtmlFetcher htmlFetcher) {
+        return new DocumentCrawlerImpl(htmlFetcher);
+    }
+
+    private static DocumentTranslator createDocumentTranslator() {
+        DeepLTranslationWrapper deepLTranslationWrapper = new DeepLTranslationWrapper();
+        return new DocumentTranslatorImpl(deepLTranslationWrapper);
+    }
+
+    private static DocumentWriter createDocumentWriter() throws IOException {
+        File file = new File("crawl.md");
+        return new MarkdownDocumentWriter(new FileWriter(file));
     }
 }
