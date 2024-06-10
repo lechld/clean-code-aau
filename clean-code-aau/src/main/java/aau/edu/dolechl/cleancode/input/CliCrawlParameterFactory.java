@@ -19,9 +19,9 @@ public class CliCrawlParameterFactory implements CrawlParameterFactory {
     public CrawlParameter create() {
         Options options = new Options();
         Option urlOption = Option.builder("u")
-                .longOpt("url")
+                .longOpt("urls")
                 .hasArg(true)
-                .type(URL.class)
+                .numberOfArgs(Option.UNLIMITED_VALUES)
                 .required()
                 .build();
         options.addOption(urlOption);
@@ -49,11 +49,22 @@ public class CliCrawlParameterFactory implements CrawlParameterFactory {
             return null;
         }
 
-        URL url;
-        try {
-            url = new URL(cmd.getOptionValue("url"));
-        } catch (MalformedURLException e) {
-            System.err.println(e.getMessage());
+        String[] urlsOptionValues = cmd.getOptionValues("u");
+        if (urlsOptionValues == null) {
+            System.err.println("Need to specify at least one url.");
+            return null;
+        }
+
+        List<URL> urls = new ArrayList<>();
+        for (String url : urlsOptionValues) {
+            try {
+                urls.add(new URL(url));
+            } catch (MalformedURLException e) {
+                System.err.println("Malformed url: " + url);
+            }
+        }
+        if (urls.isEmpty()) {
+            System.err.println("Non of the provided urls is valid.");
             return null;
         }
 
@@ -73,6 +84,6 @@ public class CliCrawlParameterFactory implements CrawlParameterFactory {
 
         String language = cmd.getOptionValue("language", "english");
 
-        return new CrawlParameter(url, depth, websites, language);
+        return new CrawlParameter(urls, depth, websites, language);
     }
 }
