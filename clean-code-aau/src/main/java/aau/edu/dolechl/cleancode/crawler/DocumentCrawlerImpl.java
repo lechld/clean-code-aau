@@ -7,7 +7,6 @@ import aau.edu.dolechl.cleancode.html.elements.HtmlHeader;
 import aau.edu.dolechl.cleancode.html.elements.HtmlLink;
 import aau.edu.dolechl.cleancode.html.fetch.HtmlFetchResult;
 import aau.edu.dolechl.cleancode.html.fetch.HtmlFetcher;
-import aau.edu.dolechl.cleancode.input.CrawlParameter;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -23,10 +22,10 @@ public class DocumentCrawlerImpl implements DocumentCrawler {
     }
 
     @Override
-    public Document crawlDocument(CrawlParameter crawlParameter) throws IOException {
+    public Document crawlDocument(URL url, int depth, List<String> websites) throws IOException {
         Document document = new Document();
 
-        addHeadersRecursively(document, crawlParameter.url(), crawlParameter.depth(), crawlParameter.websites());
+        addHeadersRecursively(document, url, depth, websites);
 
         return document;
     }

@@ -61,7 +61,7 @@ java Main [options]
 
 ### Command-Line Options
 
--   `-u, --url <URL>`: Specify the URL to crawl (required).
+-   `-u, --urls <URL>`: Specify the URL(s) to crawl (one is required).
 -   `-d, --depth <depth>`: Set the depth of crawling (optional, default is 0).
 -   `-w, --websites <websites>`: Specify websites to crawl in depth (optional, supports multiple values).
 -   `-l, --language <language>`: Set the target language for crawling (optional, default is "en").
@@ -69,7 +69,7 @@ java Main [options]
 ### Examples
 
 1.  Basic usage:
-    `java Main -u https://example.com`
+    `java Main -u https://example.com https://example2.com`
 
 2.  Specifying depth and language:
     `java Main -u https://example.com -d 3 -l en`

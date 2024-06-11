@@ -8,7 +8,6 @@ import aau.edu.dolechl.cleancode.html.elements.HtmlHeader;
 import aau.edu.dolechl.cleancode.html.elements.HtmlLink;
 import aau.edu.dolechl.cleancode.html.fetch.HtmlFetchResult;
 import aau.edu.dolechl.cleancode.html.fetch.HtmlFetcher;
-import aau.edu.dolechl.cleancode.input.CrawlParameter;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -47,7 +46,7 @@ class DocumentCrawlerImplTest {
 
         DocumentCrawlerImpl crawler = new DocumentCrawlerImpl(htmlFetcher);
 
-        Document document = crawler.crawlDocument(new CrawlParameter(url, depth, websites, "de"));
+        Document document = crawler.crawlDocument(url, depth, websites);
 
         assertEquals(4, document.getElements().size());
 

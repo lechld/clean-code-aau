@@ -8,74 +8,90 @@ import aau.edu.dolechl.cleancode.input.CrawlParameterFactory;
 import aau.edu.dolechl.cleancode.translator.DocumentTranslator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class CrawlerApplicationTest {
 
+class CrawlerApplicationTest {
+
+    @Mock
+    private Environment environment;
     @Mock
     private CrawlParameterFactory crawlParameterFactory;
-
-    @Mock
-    private DocumentCrawler crawler;
-
-    @Mock
-    private DocumentTranslator translator;
-
-    @Mock
-    private DocumentWriter writer;
-
     @Mock
     private CrawlParameter crawlParameter;
-
+    @Mock
+    private DocumentCrawler documentCrawler;
+    @Mock
+    private DocumentTranslator documentTranslator;
+    @Mock
+    private DocumentWriter documentWriter;
     @Mock
     private Document document;
 
+    @InjectMocks
     private CrawlerApplication crawlerApplication;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() throws IOException {
         MockitoAnnotations.openMocks(this);
-        crawlerApplication = new CrawlerApplication();
-    }
-
-    @Test
-    public void testRun_NormalExecution() throws IOException {
         when(crawlParameterFactory.create()).thenReturn(crawlParameter);
-        when(crawler.crawlDocument(crawlParameter)).thenReturn(document);
-        when(translator.translate(document, crawlParameter.targetLanguage())).thenReturn(document);
-
-        crawlerApplication.run(crawlParameterFactory, crawler, translator, writer);
-
-        verify(crawlParameterFactory).create();
-        verify(crawler).crawlDocument(crawlParameter);
-        verify(translator).translate(document, crawlParameter.targetLanguage());
-        verify(writer).write(crawlParameter, document);
+        when(environment.getCrawlParameterFactory()).thenReturn(crawlParameterFactory);
+        when(crawlParameter.urls()).thenReturn(List.of(new URL("http://example.com")));
+        when(environment.getDocumentCrawler()).thenReturn(documentCrawler);
+        when(environment.getDocumentTranslator()).thenReturn(documentTranslator);
+        when(environment.getDocumentWriter(anyString())).thenReturn(documentWriter);
     }
 
     @Test
-    public void testRun_NullCrawlParameter() {
-        when(crawlParameterFactory.create()).thenReturn(null);
+    void testRunWithValidParameters() throws IOException {
+        // Setup
+        when(crawlParameter.depth()).thenReturn(1);
+        when(crawlParameter.websites()).thenReturn(Arrays.asList("site1", "site2"));
+        when(crawlParameter.targetLanguage()).thenReturn("en");
+        when(documentCrawler.crawlDocument(any(), anyInt(), anyList())).thenReturn(document);
+        when(documentTranslator.translate(any(Document.class), anyString())).thenReturn(document);
 
-        crawlerApplication.run(crawlParameterFactory, crawler, translator, writer);
+        // Run the method
+        crawlerApplication.run(environment);
 
-        verify(crawlParameterFactory).create();
-        verifyNoMoreInteractions(crawler, translator, writer);
+        // Verify that the methods were called with the correct parameters
+        verify(documentCrawler).crawlDocument(new URL("http://example.com"), 1, Arrays.asList("site1", "site2"));
+        verify(documentTranslator).translate(document, "en");
+        verify(documentWriter).write(new URL("http://example.com"), 1, "en", document);
     }
 
     @Test
-    public void testRun_CrawlerIOException() throws IOException {
-        when(crawlParameterFactory.create()).thenReturn(crawlParameter);
-        when(crawler.crawlDocument(crawlParameter)).thenThrow(new IOException("Internet interrupted."));
+    void testRunWithNullCrawlParameter() throws IOException {
+        when(environment.getCrawlParameterFactory().create()).thenReturn(null);
 
-        crawlerApplication.run(crawlParameterFactory, crawler, translator, writer);
+        crawlerApplication.run(environment);
 
-        verify(crawlParameterFactory).create();
-        verify(crawler).crawlDocument(crawlParameter);
-        verifyNoMoreInteractions(translator, writer);
+        verify(documentCrawler, never()).crawlDocument(any(), anyInt(), anyList());
+        verify(documentTranslator, never()).translate(any(Document.class), anyString());
+        verify(documentWriter, never()).write(any(), anyInt(), anyString(), any(Document.class));
+    }
+
+    @Test
+    void testRunWithIOException() throws IOException {
+        when(crawlParameter.depth()).thenReturn(1);
+        when(crawlParameter.websites()).thenReturn(Arrays.asList("site1", "site2"));
+        when(crawlParameter.targetLanguage()).thenReturn("en");
+        when(documentCrawler.crawlDocument(any(), anyInt(), anyList())).thenThrow(new IOException("Test IOException"));
+
+        assertThrows(RuntimeException.class, () -> crawlerApplication.run(environment));
+
+        verify(documentCrawler).crawlDocument(new URL("http://example.com"), 1, Arrays.asList("site1", "site2"));
+        verify(documentTranslator, never()).translate(any(Document.class), anyString());
+        verify(documentWriter, never()).write(any(), anyInt(), anyString(), any(Document.class));
     }
 }

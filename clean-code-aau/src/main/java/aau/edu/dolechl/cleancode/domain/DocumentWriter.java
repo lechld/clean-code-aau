@@ -1,8 +1,9 @@
 package aau.edu.dolechl.cleancode.domain;
 
-import aau.edu.dolechl.cleancode.input.CrawlParameter;
+import java.io.Closeable;
+import java.net.URL;
 
-public interface DocumentWriter {
+public interface DocumentWriter extends Closeable {
 
-    void write(CrawlParameter parameter, Document document);
+    void write(URL url, int depth, String targetLanguage, Document document);
 }

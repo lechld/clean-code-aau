@@ -1,10 +1,10 @@
 package aau.edu.dolechl.cleancode.markdown;
 
 import aau.edu.dolechl.cleancode.domain.*;
-import aau.edu.dolechl.cleancode.input.CrawlParameter;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 
 public class MarkdownDocumentWriter implements DocumentWriter {
 
@@ -15,25 +15,29 @@ public class MarkdownDocumentWriter implements DocumentWriter {
     }
 
     @Override
-    public void write(CrawlParameter parameter, Document document) {
+    public void write(URL url, int depth, String targetLanguage, Document document) {
         try {
-            writer.write("input: <a>" + parameter.url() + "</a>\n");
-            writer.write("<br>depth: " + parameter.depth() + "\n");
-            writer.write("<br>target language: " + parameter.targetLanguage() + "\n");
+            writer.write("input: <a>" + url + "</a>\n");
+            writer.write("<br>depth: " + depth + "\n");
+            writer.write("<br>target language: " + targetLanguage + "\n");
             writer.write("<br>summary: \n");
 
             for (DocumentElement element : document.getElements()) {
                 if (element instanceof DocumentHeader header) {
 
-                    writer.write("#".repeat(header.level()) + getPrefix(header.depth(), parameter.depth()) + " " + header.value() + "\n");
+                    writer.write("#".repeat(header.level()) + getPrefix(header.depth(), depth) + " " + header.value() + "\n");
                 } else if (element instanceof DocumentLink link) {
                     String linkTo = link.isValidLink() ? "link to" : "broken link";
 
-                    writer.write("\n<br>" + getPrefix(link.depth(), parameter.depth()) + linkTo + " <a>" + link.uri() + "</a>");
+                    writer.write("\n<br>" + getPrefix(link.depth(), depth) + linkTo + " <a>" + link.uri() + "</a>");
                 }
             }
+
+            writer.write("\n");
+            writer.flush();
+
         } catch (IOException e) {
-            System.out.println("Failure writing to the output.");
+            System.err.println("Failure writing to the output.");
         }
     }
 
@@ -44,5 +48,10 @@ public class MarkdownDocumentWriter implements DocumentWriter {
         } else {
             return "-".repeat(dashes) + "> ";
         }
+    }
+
+    @Override
+    public void close() throws IOException {
+        writer.close();
     }
 }
