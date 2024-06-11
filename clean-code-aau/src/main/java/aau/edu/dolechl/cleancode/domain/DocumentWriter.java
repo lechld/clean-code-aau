@@ -1,7 +1,5 @@
 package aau.edu.dolechl.cleancode.domain;
 
-import aau.edu.dolechl.cleancode.input.CrawlParameter;
-
 import java.net.URL;
 
 public interface DocumentWriter {

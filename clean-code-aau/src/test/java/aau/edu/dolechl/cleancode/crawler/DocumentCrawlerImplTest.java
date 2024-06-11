@@ -8,7 +8,6 @@ import aau.edu.dolechl.cleancode.html.elements.HtmlHeader;
 import aau.edu.dolechl.cleancode.html.elements.HtmlLink;
 import aau.edu.dolechl.cleancode.html.fetch.HtmlFetchResult;
 import aau.edu.dolechl.cleancode.html.fetch.HtmlFetcher;
-import aau.edu.dolechl.cleancode.input.CrawlParameter;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
