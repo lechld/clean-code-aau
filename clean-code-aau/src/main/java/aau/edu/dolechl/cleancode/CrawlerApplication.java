@@ -5,11 +5,16 @@ import aau.edu.dolechl.cleancode.domain.Document;
 import aau.edu.dolechl.cleancode.input.CrawlParameter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 class CrawlerApplication {
+
+    private final String date = LocalDateTime.now().toString();
+    private final String fileIdentifier = "crawl_" + date + ".md";
+
     public void run(Environment environment) {
         CrawlParameter crawlParameter = environment.getCrawlParameterFactory().create();
 
@@ -47,11 +52,13 @@ class CrawlerApplication {
         allTranslatedCrawls.thenAccept(results -> {
             for (CrawlTaskResult result : results) {
                 try {
-                    environment.getDocumentWriter().write(result.url(), crawlParameter.depth(), crawlParameter.targetLanguage(), result.document());
+                    environment.getDocumentWriter(fileIdentifier).write(result.url(), crawlParameter.depth(), crawlParameter.targetLanguage(), result.document());
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
             }
         }).join();
+
+        System.out.println("Written crawl to " + fileIdentifier);
     }
 }

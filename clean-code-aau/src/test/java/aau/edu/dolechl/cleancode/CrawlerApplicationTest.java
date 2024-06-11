@@ -49,7 +49,7 @@ class CrawlerApplicationTest {
         when(crawlParameter.urls()).thenReturn(List.of(new URL("http://example.com")));
         when(environment.getDocumentCrawler()).thenReturn(documentCrawler);
         when(environment.getDocumentTranslator()).thenReturn(documentTranslator);
-        when(environment.getDocumentWriter()).thenReturn(documentWriter);
+        when(environment.getDocumentWriter(anyString())).thenReturn(documentWriter);
     }
 
     @Test

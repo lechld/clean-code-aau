@@ -17,5 +17,5 @@ public interface Environment {
 
     DocumentTranslator getDocumentTranslator();
 
-    DocumentWriter getDocumentWriter() throws IOException;
+    DocumentWriter getDocumentWriter(String fileIdentifier) throws IOException;
 }
