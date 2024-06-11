@@ -34,6 +34,7 @@ public class MarkdownDocumentWriter implements DocumentWriter {
             }
 
             writer.write("\n");
+            writer.flush();
 
         } catch (IOException e) {
             System.err.println("Failure writing to the output.");
@@ -47,5 +48,10 @@ public class MarkdownDocumentWriter implements DocumentWriter {
         } else {
             return "-".repeat(dashes) + "> ";
         }
+    }
+
+    @Override
+    public void close() throws IOException {
+        writer.close();
     }
 }

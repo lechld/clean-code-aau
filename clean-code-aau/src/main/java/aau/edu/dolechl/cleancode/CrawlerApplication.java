@@ -2,6 +2,7 @@ package aau.edu.dolechl.cleancode;
 
 import aau.edu.dolechl.cleancode.async.CrawlTaskResult;
 import aau.edu.dolechl.cleancode.domain.Document;
+import aau.edu.dolechl.cleancode.domain.DocumentWriter;
 import aau.edu.dolechl.cleancode.input.CrawlParameter;
 
 import java.io.IOException;
@@ -51,8 +52,8 @@ class CrawlerApplication {
 
         allTranslatedCrawls.thenAccept(results -> {
             for (CrawlTaskResult result : results) {
-                try {
-                    environment.getDocumentWriter(fileIdentifier).write(result.url(), crawlParameter.depth(), crawlParameter.targetLanguage(), result.document());
+                try (DocumentWriter writer = environment.getDocumentWriter(fileIdentifier)) {
+                    writer.write(result.url(), crawlParameter.depth(), crawlParameter.targetLanguage(), result.document());
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }

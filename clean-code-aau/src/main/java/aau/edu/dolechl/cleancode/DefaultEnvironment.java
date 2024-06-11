@@ -45,13 +45,8 @@ public class DefaultEnvironment implements Environment {
         return new DocumentTranslatorImpl(deepLTranslationWrapper);
     }
 
-    private DocumentWriter documentWriter = null;
-
     @Override
     public DocumentWriter getDocumentWriter(String fileIdentifier) throws IOException {
-        if (documentWriter == null) {
-            documentWriter = new MarkdownDocumentWriter(new FileWriter(fileIdentifier));
-        }
-        return documentWriter;
+        return new MarkdownDocumentWriter(new FileWriter(fileIdentifier, true));
     }
 }
