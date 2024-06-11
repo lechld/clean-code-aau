@@ -15,6 +15,7 @@ import aau.edu.dolechl.cleancode.translator.DocumentTranslatorImpl;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class DefaultEnvironment implements Environment {
 
@@ -51,7 +52,8 @@ public class DefaultEnvironment implements Environment {
     @Override
     public DocumentWriter getDocumentWriter() throws IOException {
         if (documentWriter == null) {
-            File file = new File("crawl.md");
+            String date = LocalDateTime.now().toString();
+            File file = new File("crawl_" + date + ".md");
             documentWriter = new MarkdownDocumentWriter(new FileWriter(file));
         }
         return documentWriter;
